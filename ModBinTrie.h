@@ -8,7 +8,7 @@
 class ModBinTrie
 {
 private:
-    using value_type = unsigned int;
+    using value_type = unsigned long;
     using reference = value_type &;
 
     struct Node
@@ -22,10 +22,6 @@ private:
 
     inline Node *MakeHeader()
     {
-        if (header)
-        {
-            throw std::exception();
-        }
 
         Node *hdr = new Node();
 
@@ -46,7 +42,7 @@ private:
         return node;
     }
 
-    void MoveToNextNode(Node *&node, Node *&side_node, bool is_last)
+    void MoveToNextNodeI(Node *&node, Node *&side_node, bool is_last)
     {
         if (is_last)
         {
@@ -74,7 +70,7 @@ private:
 public:
     ModBinTrie() : header(MakeHeader()) {}
 
-    void Insert(value_type &&value)
+    void insert(value_type &&value)
     {
         Node *current_node = header;
 
@@ -85,13 +81,41 @@ public:
             bool bit = (value >> i) & 1;
             if (bit)
             {
-                MoveToNextNode(current_node, current_node->right, i == length - 1);
+                MoveToNextNodeI(current_node, current_node->right, i == length - 1);
             }
             else
             {
-                MoveToNextNode(current_node, current_node->left, i == length - 1);
+                MoveToNextNodeI(current_node, current_node->left, i == length - 1);
             }
         }
+    }
+
+    bool contains(value_type &&value)
+    {
+        Node *current_node = header;
+
+        int length = std::bit_width(value);
+
+        for (int i = 0; i < length; i++)
+        {
+            bool bit = (value >> i) & 1;
+            if (bit)
+            {
+                if (current_node->right == header)
+                    return false;
+                current_node = current_node->right;
+            }
+            else
+            {
+                if (current_node->left == header)
+                    return false;
+                current_node = current_node->left;
+            }
+        }
+        if (current_node->value & 100)
+            return true;
+        else
+            return false;
     }
 
 private:

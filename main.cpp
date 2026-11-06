@@ -1,4 +1,8 @@
 #include <iostream>
+#include <chrono>
+#include <set>
+#include <random>
+
 #include "ModBinTrie.h"
 
 void print_horizontal_helper(typename ModBinTrie::Node *node,
@@ -82,10 +86,10 @@ void print_horizontal(const ModBinTrie &tree,
 
     os << "===============================================\n\n";
 }
+
 int main(int argc, char **argv)
 {
     ModBinTrie *bt = new ModBinTrie();
-    bt->Insert(4);
-    bt->Insert(5);
+    std::set<unsigned long> *st = new std::set<unsigned long>();
     print_horizontal(*bt);
 }
